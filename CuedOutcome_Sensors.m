@@ -12,7 +12,7 @@ global BpodSystem nidaq S
 
 %% Define parameters
 S = BpodSystem.ProtocolSettings; % Load settings chosen in launch manager into current workspace as a struct called S
-ParamPC=BpodParam_PCdep_Sensors();
+ParamPC=BpodParam_PCdep();
 if isempty(fieldnames(S))  % If settings file was an empty struct, populate struct with default settings
     CuedOutcome_Sensors_TaskParameters(ParamPC);
 end
@@ -49,15 +49,19 @@ BpodSystem.SoftCodeHandlerFunction = 'SoftCodeHandler_PlaySound';
 TrialSequence=WeightedRandomTrials(S.TrialsMatrix(:,2)', S.GUI.MaxTrials);
 S.NumTrialTypes=max(TrialSequence);
 
-FigLick=Online_LickPlot2('ini',TrialSequence);
-%% NIDAQ Initialization and Plots
+FigLick=Online_LickPlot('ini',TrialSequence);
+%% NIDAQ Initialization amd Plots
 if S.GUI.Photometry || S.GUI.Wheel
+    if (S.GUI.DbleFibers+S.GUI.Isobestic405+S.GUI.RedChannel)*S.GUI.Photometry >1
+        disp('Error - Incorrect photometry recording parameters')
+        return
+    end
     Nidaq_photometry('ini',ParamPC);
 end
 if S.GUI.Photometry
-    FigNidaq=Online_NidaqPlot('ini',S.TrialsNames,S.Names.Phase{S.GUI.Phase});
-    if S.GUI.DbleFibers==1
-        FigNidaq2=Online_NidaqPlot('ini',S.TrialsNames,S.Names.Phase{S.GUI.Phase});
+    FigNidaq1=Online_NidaqPlot('ini','470');
+    if S.GUI.DbleFibers || S.GUI.Isobestic405 || S.GUI.RedChannel
+        FigNidaq2=Online_NidaqPlot('ini','channel2');
     end
 end
 if S.GUI.Wheel
@@ -144,7 +148,7 @@ if S.GUI.Photometry || S.GUI.Wheel
     [PhotoData,WheelData,Photo2Data]=Nidaq_photometry('Save');
     if S.GUI.Photometry
         BpodSystem.Data.NidaqData{currentTrial}=PhotoData;
-        if S.GUI.DbleFibers == 1
+        if S.GUI.DbleFibers || S.GUI.RedChannel
             BpodSystem.Data.Nidaq2Data{currentTrial}=Photo2Data;
         end
     end
@@ -163,20 +167,22 @@ end
 
 %% PLOT - extract events from BpodSystem.data and update figures
 try
-[currentOutcome, currentLickEvents]=Online_LickEvents2(S.Names.StateToZero{S.GUI.StateToZero});
-FigLick=Online_LickPlot2('update',[],FigLick,currentOutcome,currentLickEvents);
-if S.GUI.Photometry
-    [currentNidaq1, rawNidaq1]=Online_NidaqDemod2(PhotoData(:,1),nidaq.LED1,S.GUI.LED1_Freq,S.GUI.LED1_Amp,S.Names.StateToZero{S.GUI.StateToZero});
-    if S.GUI.LED2_Amp~=0
-    currentNidaq2=Online_NidaqDemod2(PhotoData(:,1),nidaq.LED2,S.GUI.LED2_Freq,S.GUI.LED2_Amp,S.Names.StateToZero{S.GUI.StateToZero});
-    else
-        currentNidaq2=[0 0];
-    end
-    FigNidaq=Online_NidaqPlot('update',[],[],FigNidaq,currentNidaq1,currentNidaq2,rawNidaq1,TrialSequence(currentTrial));
+[currentOutcome, currentLickEvents]=Online_LickEvents(S.Names.StateToZero{S.GUI.StateToZero});
+FigLick=Online_LickPlot('update',[],FigLick,currentOutcome,currentLickEvents);
 
-    if S.GUI.DbleFibers
-        [currentNidaq2,rawNidaq2]=Online_NidaqDemod2(Photo2Data(:,1),nidaq.LED2,S.GUI.LED1b_Freq,S.GUI.LED1b_Amp,S.Names.StateToZero{S.GUI.StateToZero});
-        FigNidaq2=Online_NidaqPlot('update',[],[],FigNidaq2,currentNidaq2,[0 0],rawNidaq2,TrialSequence(currentTrial));
+if S.GUI.Photometry
+    [currentNidaq1, rawNidaq1]=Online_NidaqDemod(PhotoData(:,1),nidaq.LED1,S.GUI.LED1_Freq,S.GUI.LED1_Amp,S.Names.StateToZero{S.GUI.StateToZero});
+    FigNidaq1=Online_NidaqPlot('update',[],FigNidaq1,currentNidaq1,rawNidaq1);
+
+    if S.GUI.Isobestic405 || S.GUI.DbleFibers || S.GUI.RedChannel
+        if S.GUI.Isobestic405
+        [currentNidaq2, rawNidaq2]=Online_NidaqDemod(PhotoData(:,1),nidaq.LED2,S.GUI.LED2_Freq,S.GUI.LED2_Amp,S.Names.StateToZero{S.GUI.StateToZero});
+        elseif S.GUI.RedChannel
+        [currentNidaq2, rawNidaq2]=Online_NidaqDemod(Photo2Data(:,1),nidaq.LED2,S.GUI.LED2_Freq,S.GUI.LED2_Amp,S.Names.StateToZero{S.GUI.StateToZero});
+        elseif S.GUI.DbleFibers
+        [currentNidaq2, rawNidaq2]=Online_NidaqDemod(Photo2Data(:,1),nidaq.LED2,S.GUI.LED1b_Freq,S.GUI.LED1b_Amp,S.Names.StateToZero{S.GUI.StateToZero});
+        end
+        FigNidaq2=Online_NidaqPlot('update',[],FigNidaq2,currentNidaq2,rawNidaq2);
     end
 end
 
@@ -189,14 +195,14 @@ end
 
 %% Photometry QC
 if currentTrial==1 && S.GUI.Photometry
-    thismax=max(PhotoData(S.GUI.NidaqSamplingRate:S.GUI.NidaqSamplingRate*2,1));
+    thismax=max(PhotoData(S.GUI.NidaqSamplingRate:S.GUI.NidaqSamplingRate*2,1))
     if thismax>4 || thismax<0.3
         disp('WARNING - Something is wrong with fiber #1 - run check-up! - unpause to ignore')
         BpodSystem.Pause=1;
         HandlePauseCondition;
     end
     if S.GUI.DbleFibers
-    thismax=max(Photo2Data(S.GUI.NidaqSamplingRate:S.GUI.NidaqSamplingRate*2,1));
+    thismax=max(Photo2Data(S.GUI.NidaqSamplingRate:S.GUI.NidaqSamplingRate*2,1))
     if thismax>4 || thismax<0.3
         disp('WARNING - Something is wrong with fiber #2 - run check-up! - unpause to ignore')
         BpodSystem.Pause=1;
