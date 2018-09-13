@@ -76,6 +76,7 @@ global S
     
     
 %% Nidaq and Photometry
+    S.GUI.PhotometryVersion=1.0;
     S.GUI.Modulation=1;
     S.GUIMeta.Modulation.Style='checkbox';
     S.GUIMeta.Modulation.String='Auto';
