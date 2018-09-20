@@ -217,6 +217,8 @@ if BpodSystem.BeingUsed == 0
     return
 end
 end
-%% Add killer script + sarah's behavior QC code here + Quick Analysis
+%% Add sarah's behavior QC code here + Quick Analysis
+
+Analysis_Photometry_Launcher
 
 end
