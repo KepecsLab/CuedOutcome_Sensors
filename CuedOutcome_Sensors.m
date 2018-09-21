@@ -172,8 +172,9 @@ FigLick=Online_LickPlot('update',[],FigLick,currentOutcome,currentLickEvents);
 
 if S.GUI.Photometry
     [currentNidaq1, rawNidaq1]=Online_NidaqDemod(PhotoData(:,1),nidaq.LED1,S.GUI.LED1_Freq,S.GUI.LED1_Amp,S.Names.StateToZero{S.GUI.StateToZero});
+    currentNidaq1=CuedOutcome_Sensors_VariableITIAVG(currentNidaq1);
     FigNidaq1=Online_NidaqPlot('update',[],FigNidaq1,currentNidaq1,rawNidaq1);
-
+    
     if S.GUI.Isobestic405 || S.GUI.DbleFibers || S.GUI.RedChannel
         if S.GUI.Isobestic405
         [currentNidaq2, rawNidaq2]=Online_NidaqDemod(PhotoData(:,1),nidaq.LED2,S.GUI.LED2_Freq,S.GUI.LED2_Amp,S.Names.StateToZero{S.GUI.StateToZero});
@@ -182,6 +183,7 @@ if S.GUI.Photometry
         elseif S.GUI.DbleFibers
         [currentNidaq2, rawNidaq2]=Online_NidaqDemod(Photo2Data(:,1),nidaq.LED2,S.GUI.LED1b_Freq,S.GUI.LED1b_Amp,S.Names.StateToZero{S.GUI.StateToZero});
         end
+        currentNidaq2=CuedOutcome_Sensors_VariableITIAVG(currentNidaq2);
         FigNidaq2=Online_NidaqPlot('update',[],FigNidaq2,currentNidaq2,rawNidaq2);
     end
 end
