@@ -196,14 +196,14 @@ end
 %% Photometry QC
 if currentTrial==1 && S.GUI.Photometry
     thismax=max(PhotoData(S.GUI.NidaqSamplingRate:S.GUI.NidaqSamplingRate*2,1))
-    if thismax>4 || thismax<0.3
+    if thismax>4 || thismax<0.5
         disp('WARNING - Something is wrong with fiber #1 - run check-up! - unpause to ignore')
         BpodSystem.Pause=1;
         HandlePauseCondition;
     end
     if S.GUI.DbleFibers
     thismax=max(Photo2Data(S.GUI.NidaqSamplingRate:S.GUI.NidaqSamplingRate*2,1))
-    if thismax>4 || thismax<0.3
+    if thismax>4 || thismax<0.5
         disp('WARNING - Something is wrong with fiber #2 - run check-up! - unpause to ignore')
         BpodSystem.Pause=1;
         HandlePauseCondition;
