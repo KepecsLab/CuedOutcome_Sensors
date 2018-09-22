@@ -15,5 +15,5 @@ ZeroOffsetPoints=ZeroOffset*SRDecimated;
 
 %% Shaving Data
 NewNidaqDemod=NaN(ExpectedSize,3);
-NewNidaqDemod(1:ExpectedSize-ZeroOffsetPoints,:)=NidaqDemod(ZeroOffsetPoints:end,:);
+NewNidaqDemod(1:ExpectedSize-ZeroOffsetPoints+1,:)=NidaqDemod(ZeroOffsetPoints:end,:);
 end
