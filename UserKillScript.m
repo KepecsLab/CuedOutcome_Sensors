@@ -1,24 +1,15 @@
 % Sensors Project
 
-%% Pop up surveys/reminders/instructions
-
-% Remind user to clean up
-msgbox({'Stop Bonsai' 'Switch off photodetectors'}, 'Please remember to:', 'warn')
-
-% Initiate GDocs survey
-surveyLink = 'https://docs.google.com/forms/d/e/1FAIpQLSdg4kv6s4wTSwCwDNBg8obF0-nFfm-HpvFJBaa2kcWigvgSeA/viewform?usp=sf_link';
-web(surveyLink, '-browser')
-
-
 %% Name and save figure
 % Written for Operant to save figure that's already in BpodSystem struct.  
 % TODO after quick analysis, save that fig to BpodSystem.  Then do this.
 
 % %  saves into Session_Figures folder alongside Session Settings and Session
 % %  Data
-% [sessionDataDir, sessionString, ~] = fileparts(BpodSystem.DataPath);
-% sessionParts = split(sessionString, '_');
-% animalName = sessionParts{1};
+% % Uncommented in order to get animalName
+[sessionDataDir, sessionString, ~] = fileparts(BpodSystem.DataPath);
+sessionParts = split(sessionString, '_');
+animalName = sessionParts{1};
 % 
 % sessionFoldersDir = fileparts(sessionDataDir);
 % userHome = getenv('HOME');
@@ -31,6 +22,21 @@ web(surveyLink, '-browser')
 % outcomeFN = strcat(sessionString, '.png'); %saves as png
 % outcomeFullPath = strcat(photosDir, '/', outcomeFN);
 % saveas(BpodSystem.ProtocolFigures.OutcomePlotFig, outcomeFullPath);
+
+%% Don't do anything if Dummy Subject
+if regexp(animalName, 'Dummy')
+    return
+end
+%% Pop up surveys/reminders/instructions
+
+% Remind user to clean up
+msgbox({'Stop Bonsai' 'Switch off photodetectors'}, 'Please remember to:', 'warn')
+
+% Initiate GDocs survey
+surveyLink = 'https://docs.google.com/forms/d/e/1FAIpQLSdg4kv6s4wTSwCwDNBg8obF0-nFfm-HpvFJBaa2kcWigvgSeA/viewform?usp=sf_link';
+web(surveyLink, '-browser')
+
+
 
 %% send behavioral summary to Evernote notebook
 %  sends to Sensors mice notebook as Elsie
