@@ -2,7 +2,7 @@ function CuedOutcome_Sensors_TaskParameters(Param)
 %
 %
 global S
-    S.Names.Phase={'L1-CuedReward','L2-RewardSize','L3-SecondaryCue','V1-Probability','V2-Extinction','S-RewPun'};
+    S.Names.Phase={'L1-CuedReward','L2-RewardSize','L3-SecondaryCue','V1-Probability','V2-Extinction','S-RewPun','Habituation'};
     S.Names.StateToZero={'PostOutcome','CueDelivery'};
     S.Names.Rig=Param.rig;
 
