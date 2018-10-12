@@ -220,5 +220,12 @@ if BpodSystem.BeingUsed == 0
 end
 end
 %% Add killer script + sarah's behavior QC code here + Quick Analysis
-
+try
+    ChannelNames={'BLA - Sensor','TdTomato','VS - Sensor'};
+    YPhoto=[S.GUI.NidaqMin S.GUI.NidaqMax];
+    Analysis=Analysis_Photometry_Launcher_PostRec(BpodSystem,ChannelNames,YPhoto);
+    % Figure handle is in Analysis.Figure.PostRec
+catch
+    disp('Post recording analysis failed - check whether analysis pipeline is present')
+end
 end
