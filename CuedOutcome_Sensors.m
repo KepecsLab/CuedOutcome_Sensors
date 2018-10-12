@@ -223,7 +223,7 @@ end
 try
     ChannelNames={'BLA - Sensor','TdTomato','VS - Sensor'};
     YPhoto=[S.GUI.NidaqMin S.GUI.NidaqMax];
-    Analysis=Analysis_Photometry_Launcher_PostRec(BpodSystem,ChannelNames,YPhoto);
+    Analysis=Analysis_Photometry_Launcher_PostRec(BpodSystem,ChannelNames,YPhoto,FigLick.water);
     % Figure handle is in Analysis.Figure.PostRec
 catch
     disp('Post recording analysis failed - check whether analysis pipeline is present')
