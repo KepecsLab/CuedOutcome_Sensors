@@ -69,6 +69,15 @@ switch PhaseName
         trialsMatrix=[...
         % 1.type, 2.proba, 3.sound, 4.delay,    5.valve,                6.Outcome               7.Marker
             1,   1,          5,    S.GUI.Delay,  S.GUI.OmissionValve,    S.LargeRew,            double('o')];
-
+	
+    case 'Habituation-Water' 
+        trialsNames={'Habituation','Reward'...
+                     'blank','blank',...
+                     'blank','blank'};
+        trialsMatrix=[...
+        % 1.type, 2.proba, 3.sound, 4.delay,    5.valve,                6.Outcome               7.Marker
+            1,   0.5,      5,    S.GUI.Delay,   S.GUI.RewardValve,      S.InterRew,            double('o');...   
+            2,   0.5,      5,    S.GUI.Delay,   S.GUI.OmissionValve,    S.InterRew,            double('s')];
+       
 end    
 end
