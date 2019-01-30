@@ -79,6 +79,7 @@ for currentTrial = 1:S.GUI.MaxTrials
 	S.Outcome   =   S.TrialsMatrix(TrialSequence(currentTrial),6);
 
     if S.GUI.Phase==3 % L3-SecondaryCue
+        S.Cue              =   3;
         S.ExtraDelay       =   S.TrialsMatrix(TrialSequence(currentTrial),4);
         S.ExtraCueDuration =   S.GUI.CueDuration;
         S.ExtraCue         =   S.TrialsMatrix(TrialSequence(currentTrial),3);
@@ -89,7 +90,7 @@ for currentTrial = 1:S.GUI.MaxTrials
     end
     
     S.ITI = 100;
-    while S.ITI > 3 * S.GUI.ITI
+    while S.ITI > 6 * S.GUI.ITI
         S.ITI = exprnd(S.GUI.ITI);
     end
   

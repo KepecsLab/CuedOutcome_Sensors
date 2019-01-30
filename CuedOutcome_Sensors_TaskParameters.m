@@ -7,7 +7,7 @@ global S
     S.Names.Rig=Param.rig;
 
 %% General Parameters    
-    S.GUI.Phase = 1;
+    S.GUI.Phase = 7;
     S.GUIMeta.Phase.Style='popupmenu';
     S.GUIMeta.Phase.String=S.Names.Phase;
     S.GUIPanels.Task={'Phase'};
@@ -42,8 +42,8 @@ global S
     S.GUI.PreCue=3;
     S.GUI.Delay=1;
     S.GUI.DelayIncrement=0;
-    S.GUI.PostOutcome=5;
-    S.GUI.ITI=3;
+    S.GUI.PostOutcome=4;
+    S.GUI.ITI=8;
     S.GUIPanels.TaskTiming={'MaxTrials','PreCue','Delay','DelayIncrement','PostOutcome','ITI'};
     
     S.GUI.StateToZero=1;
@@ -80,7 +80,7 @@ global S
     S.GUI.Modulation=1;
     S.GUIMeta.Modulation.Style='checkbox';
     S.GUIMeta.Modulation.String='Auto';
-	S.GUI.NidaqDuration=25;
+	S.GUI.NidaqDuration=70;
     S.GUI.NidaqSamplingRate=6100;
     S.GUI.DecimateFactor=610;
     S.GUI.LED1_Name='Fiber1 470-BLA';
